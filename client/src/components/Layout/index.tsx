@@ -1,22 +1,36 @@
 import { Route, Routes } from "react-router-dom";
-import First from "../../pages/First";
-import Second from "../../pages/Second";
+import Header from "../Header";
+import RegistryList from "../../pages/RegistryList";
+import AddApiary from "../../pages/AddApiary";
+
+import {
+  Centered,
+  Container
+} from "./styles";
 
 const AppLayout = () => {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={
-            <First />
+    <Container>
+      <Header/>
+      <Centered>
+        <Routes>
+          <Route path="/" element={
+            <RegistryList/>
           }
-        />
+          />
 
-        <Route path="/second" element={
-            <Second />
+          <Route path="/first" element={
+            <RegistryList/>
           }
-        />
-      </Routes>
-    </div>
+          />
+
+          <Route path="/second" element={
+            <AddApiary/>
+          }
+          />
+        </Routes>
+      </Centered>
+    </Container>
   )
 };
 
