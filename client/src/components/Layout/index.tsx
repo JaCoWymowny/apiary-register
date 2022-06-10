@@ -19,12 +19,12 @@ const AppLayout = () => {
           }
           />
 
-          <Route path="/first" element={
+          <Route path="/registry-list" element={
             <RegistryList/>
           }
           />
 
-          <Route path="/second" element={
+          <Route path="/add-apiary" element={
             <AddApiary/>
           }
           />
