@@ -1,46 +1,64 @@
-import { Key, useState } from "react";
+import React, { Key, useState } from "react";
 import {
   ContentWindow,
   RegistryTable,
   Thead
 } from "./styles";
-import apiaryData from "../../interfaces/dbData";
+import ApiaryData from "../../interfaces/dbData";
 
-let mock: apiaryData[] = [
+let mock: ApiaryData[] = [
   {
-    number: 1234345,
-    date: "01-01-2022",
-    name: "first"
+    serialNumber: 723,
+    date: "2022-06-14",
+    name: "ceta"
   },
   {
-    number: 234567,
-    date: "02-02-2022",
-    name: "second"
+    serialNumber: 234,
+    date: "2022-06-14",
+    name: "delta"
   },
   {
-    number: 345678,
-    date: "03-03-2022",
-    name: "third"
+    serialNumber: 645,
+    date: "2022-06-15",
+    name: "alfa"
   },
   {
-    number: 456789,
-    date: "04-04-2022",
-    name: "fourth"
+    serialNumber: 856,
+    date: "2022-06-16",
+    name: "beta"
   },
 ];
 
 const RegistryList = () => {
-  const [regPosition, setRegPosition] = useState(mock);
+  const [registryData, setRegistryData] = useState(mock);
+  const [order, setOrder] = useState('ascend');
+  const [date, setDate] = useState("");
 
-  console.log(regPosition);
+
+
+  const sorting = () => {
+    if (order === 'ascend') {
+      const sorted = [...registryData].sort((a, b) =>
+        a.serialNumber - b.serialNumber
+      )
+      setRegistryData(sorted);
+      setOrder('descend');
+    } if (order === 'descend') {
+      const sorted = [...registryData].sort((a, b) =>
+        b.serialNumber - a.serialNumber
+      )
+      setRegistryData(sorted);
+      setOrder('ascend');
+    }
+  }
 
   const tableBody = () => {
-    return regPosition?.filter((regItem: apiaryData) => regItem).map((regItem: apiaryData, index: Key) => {
+    return registryData?.filter((item) => item?.date.includes(date)).map((regItem: ApiaryData, index: Key) => {
       return (
         <tr key={index}>
           <td>{regItem.date}</td>
           <td>{regItem.name}</td>
-          <td>{regItem.number}</td>
+          <td>{regItem.serialNumber}</td>
         </tr>
       )
     })
@@ -56,13 +74,25 @@ const RegistryList = () => {
           <tr>
             <th style={{width: "15%"}}>Date</th>
             <th style={{width: "15%"}}>Name</th>
-            <th style={{width: "20%"}}>Number</th>
+            <th style={{width: "20%"}} onClick={() => sorting()}>Number</th>
           </tr>
         </Thead>
         <tbody>
-        {regPosition && tableBody()}
+        {registryData && tableBody()}
         </tbody>
       </RegistryTable>
+      <form>
+        <label>
+          Set Filter Date:
+        </label>
+        <input
+          type="date"
+          name="registry-filter"
+          min="2022-01-01"
+          max="2040-12-31"
+          onChange={(e) => setDate(e.target.value)}
+        />
+      </form>
     </ContentWindow>
   )
 };

@@ -1,19 +1,44 @@
 import React, { FC, useState } from "react";
 import { ContentWindow } from "./styles";
+import ApiaryData from "../../interfaces/dbData";
+import useApiary from "../../hooks/useApiary";
+import { SerialNumber } from "../../helper/serialNumberGenerator";
+
+
 
 const AddApiary: FC = () => {
+  const { submitApiary } = useApiary();
+  const { serialNumberGenerator } = SerialNumber();
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
-  const [apiaryValue, setApiaryValue] = useState("");
-  const [number, setNumber] = useState("");
+  const [apiaryName, setApiaryName] = useState("");
+  const [manuallyEnteredNumber, setManuallyEnteredNumber] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    setDate(today);
-    setApiaryValue("");
-    alert(date + "" + apiaryValue)
-  }
+    if ((apiaryName && manuallyEnteredNumber) && (parseInt(manuallyEnteredNumber) < 99999)) {
+      setDate(today);
+      const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
+      const apiaryData: ApiaryData = {
+        serialNumber: serialNumber,
+        date: date,
+        name: apiaryName
+      }
+      submitApiary(apiaryData);
+    } else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999)) {
+      alert("za duży nr");
+    } else if (apiaryName) {
+      const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
+      const apiaryData: ApiaryData = {
+        serialNumber: serialNumber,
+        date: date,
+        name: apiaryName
+      }
+      submitApiary(apiaryData);
+    }
+    setApiaryName("");
+    setManuallyEnteredNumber("");
+  };
 
   return (
     <ContentWindow>
@@ -41,8 +66,8 @@ const AddApiary: FC = () => {
         </label>
         <input type="text"
                name="apiary-name"
-               value={apiaryValue}
-               onChange={(e) => setApiaryValue(e.target.value)}
+               value={apiaryName}
+               onChange={(e) => setApiaryName(e.target.value)}
         />
 
         <label>
@@ -50,8 +75,8 @@ const AddApiary: FC = () => {
         </label>
         <input type="number"
                name="apiary-number"
-               value={number}
-               onChange={(e) => setNumber(e.target.value)}
+               value={manuallyEnteredNumber}
+               onChange={(e) => setManuallyEnteredNumber(e.target.value)}
         />
 
         <button type='submit'>

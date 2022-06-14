@@ -1,5 +1,5 @@
 export default interface ApiaryData {
-  number: number;
+  serialNumber: number;
   date: string;
   name: string;
 }

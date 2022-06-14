@@ -7,4 +7,9 @@ export const ContentWindow = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `
