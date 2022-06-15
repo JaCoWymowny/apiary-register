@@ -1,4 +1,4 @@
-import React, { Key, useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import {
   ContentWindow,
   RegistryTable,
@@ -6,36 +6,20 @@ import {
 } from "./styles";
 import ApiaryData from "../../interfaces/dbData";
 
-let mock: ApiaryData[] = [
-  {
-    serialNumber: 723,
-    date: "2022-06-14",
-    name: "ceta"
-  },
-  {
-    serialNumber: 234,
-    date: "2022-06-14",
-    name: "delta"
-  },
-  {
-    serialNumber: 645,
-    date: "2022-06-15",
-    name: "alfa"
-  },
-  {
-    serialNumber: 856,
-    date: "2022-06-16",
-    name: "beta"
-  },
-];
-
 const RegistryList = () => {
-  const [registryData, setRegistryData] = useState(mock);
+  const [registryData, setRegistryData] = useState<ApiaryData[]>([]);
   const [order, setOrder] = useState('ascend');
   const [date, setDate] = useState("");
 
+  useEffect(() => {
+    fetchRegistryData();
+  }, [])
 
-
+  const fetchRegistryData = async() => {
+    const data = await fetch('/registry-list');
+    const items = await data.json();
+    setRegistryData(items);
+  }
   const sorting = () => {
     if (order === 'ascend') {
       const sorted = [...registryData].sort((a, b) =>
@@ -58,7 +42,7 @@ const RegistryList = () => {
         <tr key={index}>
           <td>{regItem.date}</td>
           <td>{regItem.name}</td>
-          <td>{regItem.serialNumber}</td>
+          <td>{parseInt(String(regItem.serialNumber))}</td>
         </tr>
       )
     })
