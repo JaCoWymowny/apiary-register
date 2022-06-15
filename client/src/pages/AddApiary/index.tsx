@@ -14,7 +14,7 @@ const AddApiary: FC = () => {
   const [apiaryName, setApiaryName] = useState("");
   const [manuallyEnteredNumber, setManuallyEnteredNumber] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if ((apiaryName && manuallyEnteredNumber) && (parseInt(manuallyEnteredNumber) < 99999)) {
       setDate(today);
@@ -24,6 +24,8 @@ const AddApiary: FC = () => {
         date: date,
         name: apiaryName
       }
+
+
       submitApiary(apiaryData);
     } else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999)) {
       alert("za duży nr");
@@ -48,6 +50,8 @@ const AddApiary: FC = () => {
       <form
         style={{ display: "inline-grid", gridTemplateColumns: "auto auto", gridGap: "10px 50px" }}
         onSubmit={handleSubmit}
+        encType="multipart/form-data"
+        method="post"
       >
 
         <label>
