@@ -4,7 +4,8 @@ import {
   RegistryTable,
   Thead
 } from "./styles";
-import ApiaryData from "../../interfaces/dbData";
+import { ApiaryData } from "../../interfaces/dbData";
+import { getRegistryData } from "../../services/registryDataService";
 
 const RegistryList = () => {
   const [registryData, setRegistryData] = useState<ApiaryData[]>([]);
@@ -12,14 +13,11 @@ const RegistryList = () => {
   const [date, setDate] = useState("");
 
   useEffect(() => {
-    fetchRegistryData();
-  }, [])
+    getRegistryData().then((data) => {
+      setRegistryData(data)
+    })
+  }, []);
 
-  const fetchRegistryData = async() => {
-    const data = await fetch('/registry-list');
-    const items = await data.json();
-    setRegistryData(items);
-  }
   const sorting = () => {
     if (order === 'ascend') {
       const sorted = [...registryData].sort((a, b) =>
