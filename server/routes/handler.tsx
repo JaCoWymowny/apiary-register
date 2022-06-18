@@ -28,13 +28,14 @@ router.post('/numbers-list', (req, res) => {
   console.log(req.body.date);
 
   if (incrementationData.length === 0) {
+    return incrementationData.push(requestData);
+  }
+  const validateDateAndPushIfNotExist = incrementationData.find(el => el.date === req.body.date);
+  if (validateDateAndPushIfNotExist) {
+    validateDateAndPushIfNotExist.generatedCode.push(req.body.generatedCode);
+  }
+  else {
     incrementationData.push(requestData);
-  } else {
-    incrementationData.forEach((el) => {
-      if (el.date === req.body.date) {
-        el.generatedCode.push(req.body.generatedCode)
-      }
-    });
   }
   res.sendStatus(200)
 })

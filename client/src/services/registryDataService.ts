@@ -1,5 +1,4 @@
 import { ApiaryData, IncrementalData } from "../interfaces/dbData";
-import { Logo } from "../components/Header/styles";
 
 export async function getRegistryData() {
   const data = await fetch('/registry-list');
