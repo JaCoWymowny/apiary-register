@@ -25,16 +25,15 @@ router.post('/numbers-list', (req, res) => {
     date: req.body.date,
     generatedCode: [req.body.generatedCode]
   }
-  console.log(req.body.date);
 
   if (incrementationData.length === 0) {
-    incrementationData.push(requestData);
+    return incrementationData.push(requestData);
+  }
+  const validateDate = incrementationData.find(el => el.date === req.body.date);
+  if (validateDate) {
+    validateDate.generatedCode.push(req.body.generatedCode);
   } else {
-    incrementationData.forEach((el) => {
-      if (el.date === req.body.date) {
-        el.generatedCode.push(req.body.generatedCode)
-      }
-    });
+    incrementationData.push(requestData);
   }
   res.sendStatus(200)
 })

@@ -34,10 +34,8 @@ const AddApiary: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("siema");
     if ((apiaryName && manuallyEnteredNumber) && (parseInt(manuallyEnteredNumber) < 99999)) {
       setDate(today);
-      console.log("siema");
       const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
       const check = validateSerialNumber(serialNumber, apiaryRegistryList);
       if (check) {
@@ -71,9 +69,6 @@ const AddApiary: FC = () => {
       }
       sendIncrementation(incrementData);
       sendRegistryData(apiaryData);
-      getNumbersData().then((numbers) => {
-        setValidateNumberGenerator(numbers);
-      })
     }
     setApiaryName("");
     setManuallyEnteredNumber("");
