@@ -1,30 +1,22 @@
 import React, { FC, useEffect, useState } from "react";
 import { ContentWindow } from "./styles";
 import { ApiaryData, IncrementalData } from "../../interfaces/dbData";
-import { serialNumber } from "../../helper/serialNumber";
+import { serialNumberGenerator } from "../../helper/serialNumber";
+import { currentIncrementation, } from "../../helper/currentIncrementation";
 import {
   getNumbersData,
-  getRegistryData, sendIncrementation,
+  getRegistryData,
+  sendIncrementation,
   sendRegistryData
 } from "../../services/registryDataService";
-import { currentIncrementation, increment } from "../../helper/currentIncrementation";
-import { validateSerialNumber } from "../../helper/validateSerialNumber";
-
 
 const AddApiary: FC = () => {
-  const { serialNumberGenerator } = serialNumber();
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [apiaryName, setApiaryName] = useState("");
-  const [apiaryRegistryList, setApiaryRegistryList] = useState<ApiaryData[]>([])
   const [manuallyEnteredNumber, setManuallyEnteredNumber] = useState("");
   const [validateNumberGenerator, setValidateNumberGenerator] = useState<IncrementalData[]>([]);
-
-  useEffect(() => {
-    getRegistryData().then((data) => {
-      setApiaryRegistryList(data);
-    })
-  }, []);
+  const [registryData, setRegistryData] = useState<ApiaryData[]>([]);
 
   useEffect(() => {
     getNumbersData().then((numbers) => {
@@ -32,38 +24,20 @@ const AddApiary: FC = () => {
     })
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("siema");
-    if ((apiaryName && manuallyEnteredNumber) && (parseInt(manuallyEnteredNumber) < 99999)) {
-      setDate(today);
-      console.log("siema");
-      const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
-      const check = validateSerialNumber(serialNumber, apiaryRegistryList);
-      if (check) {
-        alert("serial number exist")
-        e.preventDefault();
-      } else {
-        let apiaryData: ApiaryData = {
-          serialNumber: serialNumber,
-          date: date,
-          name: apiaryName
-        }
-        sendRegistryData(apiaryData);
-      }
-    }
-    else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999)) {
-      alert("za duży nr");
-    }
-    else if (apiaryName) {
-      const lastGeneratedNumber = currentIncrementation(date, validateNumberGenerator);
-      console.log(lastGeneratedNumber);
-      const incrementalValue = increment(date, lastGeneratedNumber);
+  useEffect(() => {
+    getRegistryData().then((data) => {
+      setRegistryData(data)
+    })
+  }, []);
+
+  const CreateAndSendRegistryData = () => {
+    if (!manuallyEnteredNumber) {
+      const incrementalValue = currentIncrementation(date, validateNumberGenerator);
       const serialNumber = serialNumberGenerator(date, incrementalValue);
       let apiaryData: ApiaryData = {
+        name: apiaryName,
         serialNumber: serialNumber,
-        date: date,
-        name: apiaryName
+        date: date
       }
       let incrementData: IncrementalData = {
         date: date,
@@ -71,11 +45,27 @@ const AddApiary: FC = () => {
       }
       sendIncrementation(incrementData);
       sendRegistryData(apiaryData);
-      getNumbersData().then((numbers) => {
-        setValidateNumberGenerator(numbers);
-      })
     }
-    setApiaryName("");
+    else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999)) {
+      alert("za duży nr");
+    } else {
+      const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
+      let apiaryData: ApiaryData = {
+        name: apiaryName,
+        serialNumber: serialNumber,
+        date: date
+      }
+      setRegistryData({ ...registryData,  });
+     sendRegistryData(apiaryData);
+    }
+  }
+  console.log(registryData);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    CreateAndSendRegistryData();
+    setDate(today);
+    setApiaryName('');
     setManuallyEnteredNumber("");
   };
 
@@ -106,7 +96,9 @@ const AddApiary: FC = () => {
         <input type="text"
                name="apiary-name"
                value={apiaryName}
-               onChange={(e) => setApiaryName(e.target.value)}
+               onChange={(e) => {
+                 setApiaryName(e.target.value)}
+        }
         />
 
         <label>
@@ -118,7 +110,8 @@ const AddApiary: FC = () => {
                onChange={(e) => setManuallyEnteredNumber(e.target.value)}
         />
 
-        <button type='submit'>
+        <button type='submit'
+        >
           Add To Registry ✔
         </button>
       </form>

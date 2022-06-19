@@ -10,6 +10,27 @@ let registryData = [
 ];
 
 let incrementationData = [
+  {
+    date: "2022-06-19",
+    generatedCode: [
+      "00001",
+      "00002"
+    ]
+  },
+  {
+    date: "2022-06-20",
+    generatedCode: [
+      "00001"
+    ]
+  },
+  {
+    date: "2022-06-21",
+    generatedCode: [
+      "00001",
+      "00002",
+      "00003"
+    ]
+  }
 ];
 
 router.get('/registry-list', (req, res ) => {
@@ -25,12 +46,12 @@ router.post('/numbers-list', (req, res) => {
     date: req.body.date,
     generatedCode: [req.body.generatedCode]
   }
-  console.log(req.body.date);
 
   if (incrementationData.length === 0) {
     return incrementationData.push(requestData);
   }
   const validateDateAndPushIfNotExist = incrementationData.find(el => el.date === req.body.date);
+
   if (validateDateAndPushIfNotExist) {
     validateDateAndPushIfNotExist.generatedCode.push(req.body.generatedCode);
   }
@@ -51,4 +72,3 @@ router.post('/registry-list', (req, res) => {
 });
 
 module.exports = router;
-
