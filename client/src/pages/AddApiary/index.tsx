@@ -30,6 +30,7 @@ const AddApiary: FC = () => {
     })
   }, []);
 
+
   const CreateAndSendRegistryData = () => {
     if (!manuallyEnteredNumber) {
       const incrementalValue = currentIncrementation(date, validateNumberGenerator);
@@ -45,6 +46,11 @@ const AddApiary: FC = () => {
       }
       sendIncrementation(incrementData);
       sendRegistryData(apiaryData);
+
+      getNumbersData().then((numbers) => {
+        console.log(numbers)
+        setValidateNumberGenerator(numbers);
+      })
     }
     else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999)) {
       alert("za duży nr");
@@ -55,11 +61,12 @@ const AddApiary: FC = () => {
         serialNumber: serialNumber,
         date: date
       }
-      setRegistryData({ ...registryData,  });
      sendRegistryData(apiaryData);
     }
+    getRegistryData().then((data) => {
+      setRegistryData(data)
+    })
   }
-  console.log(registryData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
