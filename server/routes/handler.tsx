@@ -1,37 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-let registryData = [
-  {
-    date: "2022-06-18",
-    serialNumber: 2022061600003712,
-    name: "Pasieka"
-  }
-];
+let registryData = [];
 
-let incrementationData = [
-  {
-    date: "2022-06-19",
-    generatedCode: [
-      "00001",
-      "00002"
-    ]
-  },
-  {
-    date: "2022-06-20",
-    generatedCode: [
-      "00001"
-    ]
-  },
-  {
-    date: "2022-06-21",
-    generatedCode: [
-      "00001",
-      "00002",
-      "00003"
-    ]
-  }
-];
+let incrementationData = [];
 
 router.get('/registry-list', (req, res ) => {
   res.send(registryData)

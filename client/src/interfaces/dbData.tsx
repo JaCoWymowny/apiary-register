@@ -8,5 +8,3 @@ export interface IncrementalData {
   date: string,
   generatedCode: string[] | string
 }
-
-
