@@ -47,7 +47,6 @@ const AddApiary = () => {
         Add new Apiary using below form.
       </span>
       <Form addFormData={addFormData}
-            apiaryData={apiaryData}
             apiaryNumbers={apiaryNumbers}
       />
       <label>

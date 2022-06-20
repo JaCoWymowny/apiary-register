@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { currentIncrementation } from "../../helper/currentIncrementation";
 import { ApiaryData, IncrementalData } from "../../interfaces/dbData";
 import { serialNumberGenerator } from "../../helper/serialNumber";
 import { getNumbersData } from "../../services/registryDataService";
 
-const Form = ({ addFormData, apiaryNumbers }: any) => {
+interface Props {
+  addFormData: (apiary: ApiaryData, numbers?: IncrementalData | undefined) => void
+  apiaryNumbers: IncrementalData[]
+}
+
+const Form:FC<Props> = ({ addFormData, apiaryNumbers }) => {
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [apiaryName, setApiaryName] = useState("");
@@ -31,8 +36,8 @@ const Form = ({ addFormData, apiaryNumbers }: any) => {
         generatedCode: incrementalValue
       }
       addFormData(apiaryData, incrementData);
-    } else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999)) {
-      alert("za duży nr");
+    } else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999) || manuallyEnteredNumber.length < 5) {
+      alert("To high number or digits less than 5");
     } else {
       const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
       let apiaryData: ApiaryData = {
@@ -76,9 +81,7 @@ const Form = ({ addFormData, apiaryNumbers }: any) => {
              name="apiary-name"
              value={apiaryName}
              onChange={(e) => {
-               setApiaryName(e.target.value)
-             }
-             }
+               setApiaryName(e.target.value)}}
       />
 
       <label>
@@ -87,7 +90,8 @@ const Form = ({ addFormData, apiaryNumbers }: any) => {
       <input type="number"
              name="apiary-number"
              value={manuallyEnteredNumber}
-             onChange={(e) => setManuallyEnteredNumber(e.target.value)}
+             onChange={(e) => {
+               setManuallyEnteredNumber(e.target.value)}}
       />
 
       <button type='submit'
