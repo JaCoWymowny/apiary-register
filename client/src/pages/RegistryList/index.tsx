@@ -1,4 +1,7 @@
-import React, { Key, useEffect, useState } from "react";
+import { Key,
+  useEffect,
+  useState
+} from "react";
 import {
   ContentWindow,
   RegistryTable,

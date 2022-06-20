@@ -1,9 +1,9 @@
 import { IncrementalData } from "../interfaces/dbData";
 
-export const currentIncrementation = (date: string, validateNumberGenerator: IncrementalData[]) => {
-  const xxx = validateNumberGenerator.filter((item: IncrementalData) => item.date.includes(date))
-  if (xxx.length > 0) {
-    const numberInArray = xxx[0].generatedCode;
+export const currentIncrementation = (date: string, validateControlNumbersGenerator: IncrementalData[]) => {
+  const controlNumberValidation = validateControlNumbersGenerator.filter((item: IncrementalData) => item.date.includes(date))
+  if (controlNumberValidation.length > 0) {
+    const numberInArray = controlNumberValidation[0].generatedCode;
     return increment(numberInArray[numberInArray.length - 1]);
   } else {
     return "00001"
