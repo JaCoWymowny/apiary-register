@@ -1,45 +1,51 @@
-import React, { FC, useEffect, useState } from "react";
+import  {
+  FC,
+  useEffect,
+  useState } from "react";
 import { currentIncrementation } from "../../helper/currentIncrementation";
-import { ApiaryData, IncrementalData } from "../../interfaces/dbData";
 import { serialNumberGenerator } from "../../helper/serialNumber";
 import { getNumbersData } from "../../services/registryDataService";
+import {
+  ApiaryData,
+  IncrementalData
+} from "../../interfaces/dbData";
 
 interface Props {
   addFormData: (apiary: ApiaryData, numbers?: IncrementalData | undefined) => void
-  apiaryNumbers: IncrementalData[]
+  apiaryControlsNumbers: IncrementalData[]
 }
 
-const Form:FC<Props> = ({ addFormData, apiaryNumbers }) => {
+const Form:FC<Props> = ({ addFormData, apiaryControlsNumbers }) => {
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [apiaryName, setApiaryName] = useState("");
-  const [manuallyEnteredNumber, setManuallyEnteredNumber] = useState("");
-  const [validateNumberGenerator, setValidateNumberGenerator] = useState<IncrementalData[]>([]);
+  const [formManuallyEnteredNumber, setFormManuallyEnteredNumber] = useState("");
+  const [validateControlNumbersGenerator, setValidateControlNumbersGenerator] = useState<IncrementalData[]>([]);
 
   useEffect(() => {
     getNumbersData().then((numbers) => {
-      setValidateNumberGenerator(numbers);
+      setValidateControlNumbersGenerator(numbers);
     })
-  }, [apiaryNumbers]);
+  }, [apiaryControlsNumbers]);
 
   const CreateDataToSave = () => {
-    if (!manuallyEnteredNumber) {
-      const incrementalValue = currentIncrementation(date, validateNumberGenerator);
+    if (!formManuallyEnteredNumber) {
+      const incrementalValue = currentIncrementation(date, validateControlNumbersGenerator);
       const serialNumber = serialNumberGenerator(date, incrementalValue);
       let apiaryData: ApiaryData = {
         serialNumber: serialNumber,
         name: apiaryName,
         date: date
       }
-      let incrementData: IncrementalData = {
+      let incrementControlNumberData: IncrementalData = {
         date: date,
         generatedCode: incrementalValue
       }
-      addFormData(apiaryData, incrementData);
-    } else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999) || manuallyEnteredNumber.length < 5) {
+      addFormData(apiaryData, incrementControlNumberData);
+    } else if (apiaryName && (parseInt(formManuallyEnteredNumber) > 99999) || formManuallyEnteredNumber.length < 5) {
       alert("To high number or digits less than 5");
     } else {
-      const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
+      const serialNumber = serialNumberGenerator(date, formManuallyEnteredNumber);
       let apiaryData: ApiaryData = {
         name: apiaryName,
         serialNumber: serialNumber,
@@ -53,7 +59,7 @@ const Form:FC<Props> = ({ addFormData, apiaryNumbers }) => {
     e.preventDefault();
     CreateDataToSave();
     setApiaryName('');
-    setManuallyEnteredNumber('');
+    setFormManuallyEnteredNumber('');
     setDate(today);
   };
 
@@ -89,9 +95,9 @@ const Form:FC<Props> = ({ addFormData, apiaryNumbers }) => {
       </label>
       <input type="number"
              name="apiary-number"
-             value={manuallyEnteredNumber}
+             value={formManuallyEnteredNumber}
              onChange={(e) => {
-               setManuallyEnteredNumber(e.target.value)}}
+               setFormManuallyEnteredNumber(e.target.value)}}
       />
 
       <button type='submit'

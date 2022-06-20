@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { ContentWindow } from "./styles";
-import { ApiaryData, IncrementalData } from "../../interfaces/dbData";
+import {
+  useEffect,
+  useState
+} from "react";
+import Form from "../../components/Form/Form";
 import {
   getNumbersData,
   getRegistryData,
   sendIncrementation,
   sendRegistryData
 } from "../../services/registryDataService";
-import Form from "../../components/Form/Form";
 import { validateSerialNumber } from "../../helper/validateSerialNumber";
+import {
+  ApiaryData,
+  IncrementalData
+} from "../../interfaces/dbData";
+import { ContentWindow } from "./styles";
+
+
 
 const AddApiary = () => {
   const [apiaryData, setApiaryData] = useState<ApiaryData[]>([]);
-  const [apiaryNumbers, setApiaryNumbers] = useState<IncrementalData[]>([]);
+  const [apiaryControlsNumbers, setApiaryControlsNumbers] = useState<IncrementalData[]>([]);
 
   useEffect(() => {
     getRegistryData().then((data) => {
@@ -22,7 +30,7 @@ const AddApiary = () => {
 
   useEffect(() => {
     getNumbersData().then((numbers) => {
-      setApiaryNumbers(numbers);
+      setApiaryControlsNumbers(numbers);
     })
   }, []);
 
@@ -36,7 +44,7 @@ const AddApiary = () => {
       alert('Serial number Exist')
     }
     if (numbers && !validate) {
-      setApiaryNumbers([...apiaryNumbers, numbers])
+      setApiaryControlsNumbers([...apiaryControlsNumbers, numbers])
       sendIncrementation(numbers)
     }
   }
@@ -47,7 +55,7 @@ const AddApiary = () => {
         Add new Apiary using below form.
       </span>
       <Form addFormData={addFormData}
-            apiaryNumbers={apiaryNumbers}
+            apiaryControlsNumbers={apiaryControlsNumbers}
       />
     </ContentWindow>
   )

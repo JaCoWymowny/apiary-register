@@ -1,8 +1,10 @@
-import { Route, Routes } from "react-router-dom";
+import {
+  Route,
+  Routes
+} from "react-router-dom";
 import Header from "../Header";
 import RegistryList from "../../pages/RegistryList";
 import AddApiary from "../../pages/AddApiary";
-
 import {
   Centered,
   Container
