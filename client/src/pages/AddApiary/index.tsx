@@ -49,9 +49,6 @@ const AddApiary = () => {
       <Form addFormData={addFormData}
             apiaryNumbers={apiaryNumbers}
       />
-      <label>
-        Set Filter Date:
-      </label>
     </ContentWindow>
   )
 };
