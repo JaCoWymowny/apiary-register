@@ -1,127 +1,57 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ContentWindow } from "./styles";
 import { ApiaryData, IncrementalData } from "../../interfaces/dbData";
-import { serialNumber } from "../../helper/serialNumber";
 import {
   getNumbersData,
-  getRegistryData, sendIncrementation,
+  getRegistryData,
+  sendIncrementation,
   sendRegistryData
 } from "../../services/registryDataService";
-import { currentIncrementation, increment } from "../../helper/currentIncrementation";
+import Form from "../../components/Form/Form";
 import { validateSerialNumber } from "../../helper/validateSerialNumber";
 
-
-const AddApiary: FC = () => {
-  const { serialNumberGenerator } = serialNumber();
-  const today = new Date().toISOString().split("T")[0];
-  const [date, setDate] = useState(today);
-  const [apiaryName, setApiaryName] = useState("");
-  const [apiaryRegistryList, setApiaryRegistryList] = useState<ApiaryData[]>([])
-  const [manuallyEnteredNumber, setManuallyEnteredNumber] = useState("");
-  const [validateNumberGenerator, setValidateNumberGenerator] = useState<IncrementalData[]>([]);
+const AddApiary = () => {
+  const [apiaryData, setApiaryData] = useState<ApiaryData[]>([]);
+  const [apiaryNumbers, setApiaryNumbers] = useState<IncrementalData[]>([]);
 
   useEffect(() => {
     getRegistryData().then((data) => {
-      setApiaryRegistryList(data);
+      setApiaryData(data);
     })
   }, []);
 
   useEffect(() => {
     getNumbersData().then((numbers) => {
-      setValidateNumberGenerator(numbers);
+      setApiaryNumbers(numbers);
     })
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("siema");
-    if ((apiaryName && manuallyEnteredNumber) && (parseInt(manuallyEnteredNumber) < 99999)) {
-      setDate(today);
-      console.log("siema");
-      const serialNumber = serialNumberGenerator(date, manuallyEnteredNumber);
-      const check = validateSerialNumber(serialNumber, apiaryRegistryList);
-      if (check) {
-        alert("serial number exist")
-        e.preventDefault();
-      } else {
-        let apiaryData: ApiaryData = {
-          serialNumber: serialNumber,
-          date: date,
-          name: apiaryName
-        }
-        sendRegistryData(apiaryData);
-      }
+
+  const addFormData = (apiary: ApiaryData, numbers?: IncrementalData) => {
+    const validate = validateSerialNumber(apiary.serialNumber, apiaryData);
+    if (!validate) {
+      setApiaryData([...apiaryData, apiary])
+      sendRegistryData(apiary)
+    } else {
+      alert('Serial number Exist')
     }
-    else if (apiaryName && (parseInt(manuallyEnteredNumber) > 99999)) {
-      alert("za duży nr");
+    if (numbers && !validate) {
+      setApiaryNumbers([...apiaryNumbers, numbers])
+      sendIncrementation(numbers)
     }
-    else if (apiaryName) {
-      const lastGeneratedNumber = currentIncrementation(date, validateNumberGenerator);
-      console.log(lastGeneratedNumber);
-      const incrementalValue = increment(date, lastGeneratedNumber);
-      const serialNumber = serialNumberGenerator(date, incrementalValue);
-      let apiaryData: ApiaryData = {
-        serialNumber: serialNumber,
-        date: date,
-        name: apiaryName
-      }
-      let incrementData: IncrementalData = {
-        date: date,
-        generatedCode: incrementalValue
-      }
-      sendIncrementation(incrementData);
-      sendRegistryData(apiaryData);
-      getNumbersData().then((numbers) => {
-        setValidateNumberGenerator(numbers);
-      })
-    }
-    setApiaryName("");
-    setManuallyEnteredNumber("");
-  };
+  }
 
   return (
     <ContentWindow>
       <span>
         Add new Apiary using below form.
       </span>
-      <form
-        style={{ display: "inline-grid", gridTemplateColumns: "auto auto", gridGap: "10px 50px" }}
-        onSubmit={handleSubmit}
-      >
-
-        <label>
-          Register Date:
-        </label>
-        <input type="date"
-               name="register-day"
-               min={today}
-               max="2040-12-31"
-               value={date}
-               onChange={(e) => setDate(e.target.value)}
-        />
-
-        <label>
-          Apiary Name:
-        </label>
-        <input type="text"
-               name="apiary-name"
-               value={apiaryName}
-               onChange={(e) => setApiaryName(e.target.value)}
-        />
-
-        <label>
-          Apiary Number:
-        </label>
-        <input type="number"
-               name="apiary-number"
-               value={manuallyEnteredNumber}
-               onChange={(e) => setManuallyEnteredNumber(e.target.value)}
-        />
-
-        <button type='submit'>
-          Add To Registry ✔
-        </button>
-      </form>
+      <Form addFormData={addFormData}
+            apiaryNumbers={apiaryNumbers}
+      />
+      <label>
+        Set Filter Date:
+      </label>
     </ContentWindow>
   )
 };

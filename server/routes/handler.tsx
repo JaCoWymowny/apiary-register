@@ -1,16 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-let registryData = [
-  {
-    date: "2022-06-18",
-    serialNumber: 2022061600003712,
-    name: "Pasieka"
-  }
-];
+let registryData = [];
 
-let incrementationData = [
-];
+let incrementationData = [];
 
 router.get('/registry-list', (req, res ) => {
   res.send(registryData)
@@ -25,12 +18,12 @@ router.post('/numbers-list', (req, res) => {
     date: req.body.date,
     generatedCode: [req.body.generatedCode]
   }
-  console.log(req.body.date);
 
   if (incrementationData.length === 0) {
     return incrementationData.push(requestData);
   }
   const validateDateAndPushIfNotExist = incrementationData.find(el => el.date === req.body.date);
+
   if (validateDateAndPushIfNotExist) {
     validateDateAndPushIfNotExist.generatedCode.push(req.body.generatedCode);
   }
@@ -51,4 +44,3 @@ router.post('/registry-list', (req, res) => {
 });
 
 module.exports = router;
-

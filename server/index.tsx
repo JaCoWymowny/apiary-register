@@ -11,6 +11,7 @@ app.use(require('body-parser').json());
 app.use(express.urlencoded({extended: true}))
 app.use('/', apiaryRouter);
 app.use('/registry-list', apiaryRouter);
+app.use('/numbers-list', apiaryRouter);
 
 const PORT = 4000;
 app.listen(PORT, () => {

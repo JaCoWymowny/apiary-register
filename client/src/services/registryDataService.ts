@@ -26,7 +26,6 @@ export async function sendRegistryData(apiaryData: ApiaryData) {
 }
 
 export async function sendIncrementation(incrementData: IncrementalData) {
-  console.log("Increment data service: ", incrementData)
   try {
     await fetch('http://localhost:4000/numbers-list', {
       method: 'POST',
