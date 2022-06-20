@@ -1,5 +1,5 @@
 const express = require('express');
-const apiaryRouter = require("./routes/handler.tsx");
+const apiaryRouter = require("./routes/managementOfApiaryData.ts");
 const cors = require('cors');
 
 const app = express();
