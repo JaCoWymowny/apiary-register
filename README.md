@@ -2,6 +2,13 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app)
 
+## Description
+
+Project have client and server structure - simple backend to save registry data. To make this project, I used
+ReactJS and Typescript. To Save and load data, project uses simple API. Also created functions to sorting table
+serial numbers and filter by date. To create serial number, was used algorithm witch create checksum data and fill
+unique random or choosed auxiliary number.
+
 ## How to Run this project?
 
 1. Download the repository from github Page
